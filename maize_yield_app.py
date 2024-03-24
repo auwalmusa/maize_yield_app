@@ -1,46 +1,70 @@
-import pandas as pd
 import streamlit as st
-from sklearn.model_selection import train_test_split
-import xgboost as xgb
-from sklearn.metrics import mean_squared_error
-import numpy as np
-import joblib
+import pandas as pd
+import pickle 
+import numpy as np 
+from sklearn.preprocessing import StandardScaler 
+# ... other necessary imports 
 
-# Attempt to load and display the dataset from CSV file
-try:
-    # Load the dataset
-    df = pd.read_csv('maize_yield_prediction_dataset.csv')
-    # Display the first few rows of the dataframe
-    st.write(df.head())
-except FileNotFoundError as e:
-    st.error(f'Failed to load the dataset: {e}')
-    # If the CSV file can't be found, create a DataFrame manually for demonstration
-    data = [
-        [1.5759, 0.8919, -0.7268, -0.0478, -0.6570, -1.1133, -0.8776, 0.9946, -0.2997, -0.7618, -62.956],
-        [0.5355, 1.2667, -1.7799, 1.2090, -0.1132, -0.9711, 1.0642, -0.5553, 0.7413, -0.9875, 108.722],
-        [-0.6863, 0.1571, 0.1458, -1.4327, -0.6668, 0.1762, 0.5853, 0.1979, -0.4044, -0.6075, -115.541],
-    ]
-    df = pd.DataFrame(data, columns=['SoilPH', 'P2O5', 'K2O', 'Zn', 'ClayContent', 'ECa', 'DraughtForce', 'ConeIndex', 'Precipitation', 'Temperature', 'MaizeYield'])
-    st.write("Using backup data due to CSV load failure:", df.head())
+# **App Configuration**
+st.set_page_config(page_title="GrowCast: Maize Yield Prediction", 
+                   page_icon="🌱", 
+                   layout="wide", 
+                   initial_sidebar_state="expanded")
 
-# Fill missing values with the backward fill method
-df_filled = df.bfill()
+# **Load Data and Models**
+def load_data():
+    # Replace with GrowCast specific data loading (CSV, database, or API calls)
+    ...
 
-# Splitting dataset into features and target
-X = df_filled.drop('MaizeYield', axis=1)
-y = df_filled['MaizeYield']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+def load_models():
+    # Load GrowCast models (replace if not using logistic regression)
+    model = pickle.load(open("growcast_model.pkl", "rb"))
+    scaler = pickle.load(open("growcast_scaler.pkl", "rb")) 
+    return model, scaler
 
-# Initialize and train the XGBoost model
-model = xgb.XGBRegressor(objective ='reg:squarederror', colsample_bytree = 0.3, learning_rate = 0.1,
-                max_depth = 5, alpha = 10, n_estimators = 10)
-model.fit(X_train, y_train)
+# **Sidebar: User Inputs**
+def add_sidebar():
+    # Key GrowCast variables (soil properties, weather, management, etc.)
+    st.sidebar.header("Maize Growth Parameters")
+    ...  # Sliders or input fields for each parameter
 
-# Make predictions and calculate RMSE
-predictions = model.predict(X_test)
-rmse = np.sqrt(mean_squared_error(y_test, predictions))
-st.write(f"RMSE: {rmse}")
+# **Radar Chart** 
+def add_radar_chart(input_dict):
+     # May need adjustments based on GrowCast's features
+     ...
 
-# Save the model to a file
-joblib.dump(model, 'maize_yield_model.pkl')
-st.write("Model saved successfully!")
+# **Yield Prediction**
+def display_predictions(input_data, model, scaler):
+    input_array = np.array(list(input_data.values())).reshape(1, -1)
+    input_data_scaled = scaler.transform(input_array)
+    prediction = model.predict(input_data_scaled)
+
+    st.subheader('Maize Yield Prediction')
+    # ... Present yield in appropriate units
+
+    # ... Confidence levels, probabilities, or other relevant outputs 
+
+    st.write("Disclaimer: GrowCast aids decision-making but doesn't replace expert judgment...")
+
+# **Main Function**
+def main():
+    data = load_data() 
+    model, scaler = load_models()
+
+    input_dict = add_sidebar(data)
+
+    with st.container():
+        st.title("GrowCast: Precision Yield Forecasting")
+        st.write("...")  # App description, focus on spatio-temporal advantage
+        col1, col2 = st.columns([4, 1]) 
+
+        with col1:
+            radar_chart = add_radar_chart(input_dict)
+            st.plotly_chart(radar_chart, use_container_width=True)
+
+        with col2:
+            display_predictions(input_dict, model, scaler)
+
+# **App Execution** 
+if __name__ == "__main__": 
+    main()
