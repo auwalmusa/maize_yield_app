@@ -1,10 +1,20 @@
 import pandas as pd
 import streamlit as st
-import pandas as pd
 
-# Troubleshooting code to test CSV file loading
-try:
-    df = pd.read_csv('maize_yield_prediction_dataset.csv')
+# Example data embedded directly into the script
+data = [
+    [1.5759, 0.8919, -0.7268, -0.0478, -0.6570, -1.1133, -0.8776, 0.9946, -0.2997, -0.7618, -62.956],
+    [0.5355, 1.2667, -1.7799, 1.2090, -0.1132, -0.9711, 1.0642, -0.5553, 0.7413, -0.9875, 108.722],
+    [-0.6863, 0.1571, 0.1458, -1.4327, -0.6668, 0.1762, 0.5853, 0.1979, -0.4044, -0.6075, -115.541],
+    # Add more rows as needed
+]
+
+# Convert the data to a DataFrame
+df = pd.DataFrame(data, columns=['SoilPH', 'P2O5', 'K2O', 'Zn', 'ClayContent', 'ECa', 'DraughtForce', 'ConeIndex', 'Precipitation', 'Temperature', 'MaizeYield'])
+
+# Use the DataFrame as before
+st.write(df.head())
+
     st.write(df.head())
 except FileNotFoundError as e:
     st.error(f'Failed to load the dataset: {e}')
