@@ -1,10 +1,10 @@
 import pandas as pd
 
 # Define the path to your dataset
-file_path = r'C:\Users\wasagu\OneDrive\Desktop\maize_yield_app\maize_yield_prediction_dataset.csv'
 
 # Load the dataset
-df = pd.read_csv(file_path)
+df = pd.read_csv('maize_yield_prediction_dataset.csv')
+
 
 # Display the first few rows of the dataframe
 print(df.head())
