@@ -1,8 +1,14 @@
 import pandas as pd
+import streamlit as st
+import pandas as pd
 
-# Define the path to your dataset
+# Troubleshooting code to test CSV file loading
+try:
+    df = pd.read_csv('maize_yield_prediction_dataset.csv')
+    st.write(df.head())
+except FileNotFoundError as e:
+    st.error(f'Failed to load the dataset: {e}')
 
-# Load the dataset
 df = pd.read_csv('maize_yield_prediction_dataset.csv')
 
 
