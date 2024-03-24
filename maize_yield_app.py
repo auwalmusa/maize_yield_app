@@ -15,7 +15,6 @@ df = pd.DataFrame(data, columns=['SoilPH', 'P2O5', 'K2O', 'Zn', 'ClayContent', '
 # Use the DataFrame as before
 st.write(df.head())
 
-    st.write(df.head())
 except FileNotFoundError as e:
     st.error(f'Failed to load the dataset: {e}')
 
